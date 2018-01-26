@@ -274,4 +274,5 @@ ASSET_MANAGER.downloadAll(function () {
 
     gameEngine.init(ctx);
     gameEngine.start();
+    window.alert("Feel free to move Spectre back and forth with the arrow keys!");
 });
