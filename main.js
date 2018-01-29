@@ -109,10 +109,12 @@ function Spectre(game) {
     this.standingRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spectre_standing.png"), 0, 0, 148, 125, 1, 1, true, false);
     this.runningLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spectre_left.png"), 0, 0, 144, 144, .1, 35, true, false);
     this.standingLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spectre_standing_left.png"), 0, 0, 148, 125, 1, 1, true, false);
+    this.jumpRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spectre_jump.png"), 0, 0, 68, 62, 10, 1, true, false);
     this.running = false;
     this.standing = true;
     this.right = true;
     this.left = false;
+    this.jump = false;
     this.speed = 0;
     Entity.call(this, game, 400, 600 - 106);
 }
@@ -121,6 +123,19 @@ Spectre.prototype = new Entity();
 Spectre.prototype.constructor = Spectre;
 
 Spectre.prototype.update = function () {
+    if (this.game.space) {
+        this.jump = true;
+        this.standing = false;
+    } else {
+        this.jump = false;
+        this.standing = true;
+    }
+    if (this.jump) {
+        if (this.jumpRightAnimation.isDone()) {
+            this.jumpRightAnimation.elapsedTime = 0;
+            this.jump = false;
+        }
+    }
     if (this.game.moveRight) {
         this.left = false;
         this.right = true;
@@ -137,7 +152,7 @@ Spectre.prototype.update = function () {
         this.x -= this.game.clockTick * this.speed;
     } else {
         this.running = false;
-        this.standing = true;
+//        this.standing = true;
         this.speed = 0;
     }
     if (this.x > 1100) {
@@ -153,10 +168,12 @@ Spectre.prototype.draw = function (ctx) {
         this.runningRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     } else if (this.running && this.left) {
         this.runningLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-    } else if (this.right) {
+    } else if (this.right && this.standing) {
         this.standingRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-    } else if (this.left) {
+    } else if (this.left && this.standing) {
         this.standingLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+    } else if (this.jump) {
+        this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     }
     Entity.prototype.draw.call(this);
 }
@@ -253,6 +270,7 @@ ASSET_MANAGER.queueDownload("./img/bear.png");
 ASSET_MANAGER.queueDownload("./img/bear1.png");
 ASSET_MANAGER.queueDownload("./img/tree.png");
 ASSET_MANAGER.queueDownload("./img/spectre_standing.png");
+ASSET_MANAGER.queueDownload("./img/spectre_jump.png");
 ASSET_MANAGER.queueDownload("./img/spectre_standing_left.png");
 ASSET_MANAGER.queueDownload("./img/spectre_left.png");
 
@@ -274,5 +292,4 @@ ASSET_MANAGER.downloadAll(function () {
 
     gameEngine.init(ctx);
     gameEngine.start();
-    window.alert("Feel free to move Spectre back and forth with the arrow keys!");
 });

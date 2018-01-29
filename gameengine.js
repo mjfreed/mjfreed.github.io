@@ -70,7 +70,10 @@ GameEngine.prototype.startInput = function () {
             that.moveLeft = true;
             that.right = false;
             that.left = true;
+        } else if ((e.keyCode) === 32) {
+            that.space = true;
         }
+        console.log(e);
         e.preventDefault();
     }, false);
 
@@ -79,6 +82,8 @@ GameEngine.prototype.startInput = function () {
             that.moveRight = false;
         } else if ((e.keyCode) === 37) {
             that.moveLeft = false;
+        } else if ((e.keyCode) === 32) {
+            that.space = false;
         }
         e.preventDefault();
     }, false);
@@ -122,11 +127,11 @@ GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
     this.update();
     this.draw();
-    //this.space = null;
     this.moveRight;
     this.moveLeft;
     this.right;
     this.left;
+    this.space = null;
 }
 
 function Entity(game, x, y) {

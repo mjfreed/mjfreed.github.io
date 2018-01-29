@@ -1,2 +1,0 @@
-# mjfreed.github.io
-Assignments
